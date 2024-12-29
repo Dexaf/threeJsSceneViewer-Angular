@@ -1,0 +1,80 @@
+<div id="canvas-container" style="position: relative; width: 100%; height: 60vh; margin-bottom: 2rem;">
+  @if(!isPlaying) {
+  <div id="play-overlay" (click)="playScene()">
+    <button style="background: none; border: none; cursor: pointer;">
+      <span style="font-size: 5rem; color: white;">
+        <svg class="svg-icon"
+          style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;"
+          viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg">
+          <path
+            d="M852.727563 392.447107C956.997809 458.473635 956.941389 565.559517 852.727563 631.55032L281.888889 993.019655C177.618644 1059.046186 93.090909 1016.054114 93.090909 897.137364L93.090909 126.860063C93.090909 7.879206 177.675064-35.013033 281.888889 30.977769L852.727563 392.447107 852.727563 392.447107Z" />
+        </svg>
+      </span>
+    </button>
+  </div>
+  }
+  @if(isLoading) {
+  <loading-bar-component [loadingProgressPercentage]="loadingProgressPercentage">
+  </loading-bar-component>
+  }
+  @if(sceneHasError) {
+  <div id="error-overlay">
+    ERROR OCCURRED
+  </div>
+  }
+  <div [style]="isLoading ? 'opacity: 0;' : ''">
+    <div id="controls-overlay"
+      style="position: absolute; top: 10px; right: 10px; display: flex; gap: 10px; z-index: 10;">
+      <!-- Pulsante Mute -->
+      @if(this.hasAudio) {
+      <button id="mute-btn" (click)="toggleMute()" [class]="isMuted ? 'buttonOff': 'buttonOn'">
+        <svg xmlns="http://www.w3.org/2000/svg" version="1.0" width="64" height="64" viewBox="0 0 75 75">
+          <path d="M39.389,13.769 L22.235,28.606 L6,28.606 L6,47.699 L21.989,47.699 L39.389,62.75 L39.389,13.769z"
+            style="stroke:#111;stroke-width:5;stroke-linejoin:round;fill:#111;" />
+          <path d="M48,27.6a19.5,19.5 0 0 1 0,21.4M55.1,20.5a30,30 0 0 1 0,35.6M61.6,14a38.8,38.8 0 0 1 0,48.6"
+            style="fill:none;stroke:#111;stroke-width:5;stroke-linecap:round" />
+        </svg>
+      </button>
+      }
+      <!-- Pulsante Fullscreen -->
+      <button id="fullscreen-btn" (click)="toggleFullscreen()" [class]="isFullscreen ? 'buttonOn': 'buttonOff'">
+        <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" height="64"
+          width="64" version="1.1" id="Layer_1" viewBox="0 0 512 512" xml:space="preserve">
+          <g>
+            <g>
+              <path d="M0,0v512h512V0H0z M477.867,477.867H34.133V34.133h443.733V477.867z" />
+            </g>
+          </g>
+          <g>
+            <g>
+              <polygon
+                points="126.533,102.4 199.111,102.4 199.111,68.267 68.267,68.267 68.267,199.111 102.4,199.111 102.4,126.538     198.422,222.558 222.556,198.423   " />
+            </g>
+          </g>
+          <g>
+            <g>
+              <polygon
+                points="222.557,313.581 198.422,289.445 102.4,385.467 102.4,312.889 68.267,312.889 68.267,443.733 199.111,443.733     199.111,409.6 126.538,409.6   " />
+            </g>
+          </g>
+          <g>
+            <g>
+              <polygon
+                points="409.6,312.889 409.6,385.467 313.578,289.444 289.444,313.578 385.462,409.6 312.889,409.6 312.889,443.733     443.733,443.733 443.733,312.889   " />
+            </g>
+          </g>
+          <g>
+            <g>
+              <polygon
+                points="312.889,68.267 312.889,102.4 385.467,102.4 289.444,198.423 313.578,222.558 409.6,126.538 409.6,199.111     443.733,199.111 443.733,68.267   " />
+            </g>
+          </g>
+        </svg>
+      </button>
+    </div>
+    <canvas #canvas></canvas>
+    <p style="font-size: 1.5rem; margin-bottom: 1rem;">
+      {{sceneLabel}}
+    </p>
+  </div>
+</div>

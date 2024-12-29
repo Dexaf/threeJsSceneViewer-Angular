@@ -7,48 +7,14 @@ import { GLTFLoader } from '../../utils/threeJs/GLTFLoader.js'
 // @ts-ignore
 import { Water } from '../../utils/threeJs/Water.js'
 import { LoadingBarComponent } from "../loadingBar/loadingBar.component.js";
-import { IWater } from "../models/interface/water.js";
-import { ILight } from "../models/interface/lights.js";
-import { IVector2, IVector3 } from "../models/interface/vectors.js";
-import { IControls } from "../models/interface/controls.js";
+import { IWater } from "../../../models/interface/water.js";
+import { ILight } from "../../../models/interface/lights.js";
+import { IVector2, IVector3 } from "../../../models/interface/vectors.js";
+import { IControls } from "../../../models/interface/controls.js";
 
 @Component({
   selector: 'threeD-scene-viewer',
-  template: `
-    <div id="canvas-container" style="position: relative; width: 100%; height: 60vh; margin-bottom: 2rem;">
-      @if(!isPlaying) {
-        <div id="play-overlay" (click)="playScene()">
-          <button style="background: none; border: none; cursor: pointer;">
-            <span style="font-size: 5rem; color: white;">
-              <svg 
-                class="svg-icon" 
-                style="width: 1em; height: 1em;vertical-align: middle;fill: currentColor;overflow: hidden;" 
-                viewBox="0 0 1024 1024" 
-                version="1.1" 
-                xmlns="http://www.w3.org/2000/svg">
-                <path d="M852.727563 392.447107C956.997809 458.473635 956.941389 565.559517 852.727563 631.55032L281.888889 993.019655C177.618644 1059.046186 93.090909 1016.054114 93.090909 897.137364L93.090909 126.860063C93.090909 7.879206 177.675064-35.013033 281.888889 30.977769L852.727563 392.447107 852.727563 392.447107Z"  />
-              </svg>
-            </span>
-          </button>
-        </div>
-      }
-      @if(isLoading) {
-        <loading-bar-component [loadingProgressPercentage]="loadingProgressPercentage">
-        </loading-bar-component>
-      }
-      @if(sceneHasError) {
-        <div id="error-overlay">
-          ERROR OCCURRED
-        </div>
-      }
-      <div [style]="isLoading ? 'opacity: 0;' : ''">
-        <canvas #canvas></canvas>
-        <p style="font-size: 1.5rem; margin-bottom: 1rem;">
-          {{sceneLabel}}
-        </p>
-      </div>
-    </div>
-  `,
+  templateUrl: './threeDSceneViewer.component.html',
   imports: [LoadingBarComponent],
   styleUrl: './threeDSceneViewer.component.css'
 })
@@ -57,8 +23,8 @@ export class ThreeDSceneViewerComponent implements OnChanges, AfterViewInit {
   @Input() sceneLabel: string = "";
   @Input() sceneFolderName: string = "";
   @Input() sceneName: string = "";
-  @Input() cameraPosition: IVector3 = { x: 10, y: 10, z: 10 };
-  @Input() cameraRenderDistances: IVector2 = { x: 0.1, y: 20 };
+  @Input() cameraPosition!: IVector3;
+  @Input() cameraRenderDistances: IVector2 = { x: 0.1, y: 5000 };
   @Input() controlsData!: IControls;
   @Input() watersData: IWater[] = [];
   @Input() lightsData: ILight[] = [];
@@ -92,12 +58,14 @@ export class ThreeDSceneViewerComponent implements OnChanges, AfterViewInit {
   isLoading: boolean = true;
   sceneHasError: boolean = false;
   resizeObserver: ResizeObserver;
+  isMuted: boolean = false;
+  isFullscreen: boolean = false;
 
   constructor() {
     this.resizeObserver = new ResizeObserver((entries) => {
       for (const entry of entries) {
         const width = entry.contentRect.width;
-        const height = window.innerHeight * 0.6;
+        const height = window.innerHeight * (this.isFullscreen ? 1 : 0.6);
         this._renderer.setSize(width, height, false);
         this._camera.aspect = width / height;
         this._camera.updateProjectionMatrix();
@@ -133,8 +101,46 @@ export class ThreeDSceneViewerComponent implements OnChanges, AfterViewInit {
     this.onLoading.emit();
   }
 
+  toggleMute(): void {
+    if (this._sound) {
+      this.isMuted = !this.isMuted;
+      this._sound.setVolume(this.isMuted ? 0 : this.audioVolume);
+    }
+  }
+
+  toggleFullscreen(): void {
+    const canvasContainer = document.getElementById("canvas-container");
+    if (!canvasContainer) return;
+
+    if (!this.isFullscreen) {
+      if (canvasContainer.requestFullscreen) {
+        canvasContainer.requestFullscreen();
+      } else if ((canvasContainer as any).mozRequestFullScreen) {
+        (canvasContainer as any).mozRequestFullScreen();
+      } else if ((canvasContainer as any).webkitRequestFullscreen) {
+        (canvasContainer as any).webkitRequestFullscreen();
+      } else if ((canvasContainer as any).msRequestFullscreen) {
+        (canvasContainer as any).msRequestFullscreen();
+      }
+      this.isFullscreen = true;
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if ((document as any).mozCancelFullScreen) {
+        (document as any).mozCancelFullScreen();
+      } else if ((document as any).webkitExitFullscreen) {
+        (document as any).webkitExitFullscreen();
+      } else if ((document as any).msExitFullscreen) {
+        (document as any).msExitFullscreen();
+      }
+      this.isFullscreen = false;
+    }
+  }
+
   // Private Methods
   private _initSceneRoutine() {
+    this.isMuted = !this.hasAudio;
+    this.isFullscreen = false;
     this._setLoaders();
     this._disposeSceneMedia();
     this._main(this.canvasRef.nativeElement);

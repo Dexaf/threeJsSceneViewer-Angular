@@ -24,3 +24,38 @@
   place-content: center;
   align-items: center
 }
+
+#controls-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  gap: 10px;
+  z-index: 2;
+}
+
+.buttonOn {
+  opacity: 1;
+}
+
+.buttonOff {
+  opacity: 0.5;
+}
+
+#controls-overlay button {
+  transition: all 0.25s;
+  border: none; 
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 5px;
+  display: flex;
+  padding: 6px;
+}
+
+#controls-overlay button:hover {
+  opacity: 0.8;
+}
+
+#controls-overlay button:active {
+  transform: scale(0.95);
+}

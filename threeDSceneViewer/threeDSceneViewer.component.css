@@ -1,0 +1,26 @@
+#play-overlay {
+  background-color: rgb(146, 146, 146);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  place-content: center;
+  align-items: center;
+  cursor: pointer;
+}
+
+#error-overlay {
+  background-color: rgba(255, 0, 0, 0.5);
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1;
+  display: flex;
+  place-content: center;
+  align-items: center
+}

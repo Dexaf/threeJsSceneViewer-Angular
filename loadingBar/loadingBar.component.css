@@ -1,0 +1,27 @@
+.zone-expander {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 1;
+  background-color: rgb(194, 194, 194);
+  display: flex;
+  place-items: center;
+  place-content: center;
+}
+
+.progress-container {
+  width: 50%;
+  height: 10px;
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.progress-bar {
+  height: 100%;
+  background: linear-gradient(to right, #007aff, #005ecb);
+  transition: width 0.4s ease;
+}

@@ -275,7 +275,6 @@ export class ThreeDSceneViewerComponent implements OnChanges, AfterViewInit {
       // called while loading is progressing
       (xhr: any) => {
         this.loadingProgressPercentage = xhr.loaded / xhr.total * 100;
-        console.log(this.loadingProgressPercentage + '% loadingProgressPercentage');
       },
       // called when loading has errors
       (error: any) => {

@@ -15,7 +15,7 @@ for the most basic start you just need
 the assetsRoot, sceneFolderName, sceneName which makes the path to GLTF to load the scene
 and a control for the orbit camera, use this:
 
-```json
+```javascript
   controls: IControls = {
     target: { x: 0, y: 0, z: 0 },
     enableDamping: true,
